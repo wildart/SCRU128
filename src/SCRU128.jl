@@ -79,9 +79,14 @@ function SCRU128Id(s::String)
     if match(r"^[0-9A-Za-z]{25}$", s) === nothing
         throw(ArgumentError("invalid string representation"))
     end
-    return SCRU128Id(parse(UInt128, s, base=36))
+    id = try
+        parse(UInt128, s, base=36)
+    catch e
+        throw(ArgumentError("invalid string representation"))
+    end
+    return SCRU128Id()
 end
-
+SCRU128Id() = first(scru128())
 
 UInt128(v::SCRU128Id) = v.id
 convert(::Type{UInt128}, v::SCRU128Id) = UInt128(v)
